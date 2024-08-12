@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Login.css";
+import { login } from "./api";
 
 interface LoginProps {
   onLogin: () => void;
@@ -9,12 +10,18 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ onLogin, onToggle }) => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
-    onLogin();
+    try {
+      const response = await login(username, password);
+      console.log("Login successful:", response.data);
+      onLogin();
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError("Login failed. Please check your credentials and try again.");
+    }
   };
 
   return (
@@ -41,12 +48,13 @@ const Login: React.FC<LoginProps> = ({ onLogin, onToggle }) => {
             required
           />
         </div>
+        {error && <p className="error-message">{error}</p>}
         <button type="submit" className="login-button">
           Login
         </button>
       </form>
       <button className="toggle-button" onClick={onToggle}>
-        Don't have an account? Sign Up
+        Don't have an account? Register
       </button>
     </div>
   );

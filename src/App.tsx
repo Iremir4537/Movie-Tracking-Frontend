@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Login from "./Login";
-import SignUp from "./SignUp";
+import Register from "./Register";
 import Home from "./Home";
 
 const App: React.FC = () => {
@@ -20,7 +20,7 @@ const App: React.FC = () => {
       {isLoggedIn ? (
         <Home />
       ) : isSignUp ? (
-        <SignUp onSignUp={handleLogin} onToggle={toggleSignUp} />
+        <Register onRegister={handleLogin} onToggle={toggleSignUp} />
       ) : (
         <Login onLogin={handleLogin} onToggle={toggleSignUp} />
       )}

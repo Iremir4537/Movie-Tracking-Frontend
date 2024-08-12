@@ -1,35 +1,40 @@
 import React, { useState } from "react";
 import "./Login.css";
+import { register } from "./api";
 
 interface SignUpProps {
-  onSignUp: () => void;
+  onRegister: () => void;
   onToggle: () => void;
 }
 
-const SignUp: React.FC<SignUpProps> = ({ onSignUp, onToggle }) => {
+const Register: React.FC<SignUpProps> = ({ onRegister, onToggle }) => {
   const [username, setUsername] = useState<string>("");
+  const [emailaddress, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Burada gerçek sign up işlemi yapılabilir
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    onSignUp();
+    try {
+      const response = await register(username, emailaddress, password);
+      console.log("Register successful:", response.data);
+      onRegister();
+    } catch (error) {
+      console.error("Register failed:", error);
+      setError("Register failed. Please try again.");
+    }
   };
 
   return (
     <div className="login-container">
-      <h2 className="login-title">Sign Up</h2>
+      <h2 className="login-title">Register</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
             type="email"
             id="email"
-            value={email}
+            value={emailaddress}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -54,6 +59,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSignUp, onToggle }) => {
             required
           />
         </div>
+        {error && <p className="error-message">{error}</p>}
         <button type="submit" className="login-button">
           Sign Up
         </button>
@@ -65,4 +71,4 @@ const SignUp: React.FC<SignUpProps> = ({ onSignUp, onToggle }) => {
   );
 };
 
-export default SignUp;
+export default Register;
